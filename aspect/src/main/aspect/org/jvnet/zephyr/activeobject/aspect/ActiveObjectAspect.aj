@@ -61,7 +61,7 @@ public final aspect ActiveObjectAspect pertypewithin(ActiveObject+) {
     private long timeout;
     private ActiveObjectThread ActiveObject.thread;
 
-    after() returning: staticinitialization(*) {
+    after() returning: staticinitialization(ActiveObject+) {
         declaringType = thisJoinPointStaticPart.getSignature().getDeclaringType();
         Active annotation = declaringType.getAnnotation(Active.class);
 
@@ -97,7 +97,7 @@ public final aspect ActiveObjectAspect pertypewithin(ActiveObject+) {
         }
     }
 
-    after(ActiveObject obj) returning: initialization((!ActiveObject).new(..)) && this(obj) {
+    after(ActiveObject obj) returning: initialization((ActiveObject+ && !ActiveObject).new(..)) && this(obj) {
         if (obj.getClass() == declaringType) {
             ActiveObjectThread thread = new ActiveObjectThread(mailboxFactory.create());
             thread.setName(obj.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(obj)));
@@ -108,8 +108,8 @@ public final aspect ActiveObjectAspect pertypewithin(ActiveObject+) {
         }
     }
 
-    Object around(final ActiveObject obj): (execution(!@Exclude !@Oneway public * *(..))
-            || execution(@Include !@Oneway !public * *(..))) && this(obj) {
+    Object around(final ActiveObject obj): (execution(!@Exclude !@Oneway public * ActiveObject+.*(..))
+            || execution(@Include !@Oneway !public * ActiveObject+.*(..))) && this(obj) {
         ActiveObjectThread thread = obj.thread;
         if (Thread.currentThread() == thread) {
             return proceed(obj);
@@ -178,8 +178,8 @@ public final aspect ActiveObjectAspect pertypewithin(ActiveObject+) {
         throw (E) exception;
     }
 
-    void around(final ActiveObject obj): (execution(!@Exclude @Oneway public void *(..))
-            || execution(@Include @Oneway !public void *(..))) && this(obj) {
+    void around(final ActiveObject obj): (execution(!@Exclude @Oneway public void ActiveObject+.*(..))
+            || execution(@Include @Oneway !public void ActiveObject+.*(..))) && this(obj) {
         ActiveObjectThread thread = obj.thread;
         if (Thread.currentThread() == thread) {
             proceed(obj);
