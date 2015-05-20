@@ -63,7 +63,7 @@
                         </mappingEntry>
                         <mappingEntry>
                             <oldName>java/util/concurrent/locks/AbstractQueuedSynchronizer</oldName>
-                            <newName>org/jvnet/zephyr/impl/java/util/concurrent/locks/AbstractQueuedSynchronizer
+                            <newName>org/jvnet/zephyr/jcl/impl/util/concurrent/locks/AbstractQueuedSynchronizer
                             </newName>
                         </mappingEntry>
                         <mappingEntry>
