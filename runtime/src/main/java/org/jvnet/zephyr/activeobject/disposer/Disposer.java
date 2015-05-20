@@ -36,11 +36,13 @@ public final class Disposer {
 
     private final ReferenceQueue<Object> referenceQueue = new ReferenceQueue<>();
     private final Map<Object, Disposable> disposables = new ConcurrentHashMap<>();
+    private final DisposerThread thread;
 
-    public Disposer() {
-        DisposerThread thread = new DisposerThread(referenceQueue, disposables);
-        thread.setName(Disposer.class.getSimpleName());
+    public Disposer(String name) {
+        thread = new DisposerThread(referenceQueue, disposables);
+        thread.setName(name);
         thread.setDaemon(true);
+        thread.runnable = true;
         thread.start();
     }
 
@@ -50,10 +52,17 @@ public final class Disposer {
         disposables.put(new PhantomReference<>(obj, referenceQueue), disposable);
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        thread.runnable = false;
+        thread.interrupt();
+    }
+
     private static final class DisposerThread extends Thread {
 
         private final ReferenceQueue<?> referenceQueue;
         private final Map<?, ? extends Disposable> disposables;
+        volatile boolean runnable;
 
         DisposerThread(ReferenceQueue<?> referenceQueue, Map<?, ? extends Disposable> disposables) {
             this.referenceQueue = referenceQueue;
@@ -62,19 +71,26 @@ public final class Disposer {
 
         @Override
         public void run() {
-            while (true) {
-                Reference<?> reference;
+            Reference<?> reference;
+            while (runnable) {
                 try {
                     reference = referenceQueue.remove();
                 } catch (InterruptedException ignored) {
                     continue;
                 }
-                Disposable disposable = disposables.remove(reference);
-                try {
-                    disposable.dispose();
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
+                dispose(reference);
+            }
+            while ((reference = referenceQueue.poll()) != null) {
+                dispose(reference);
+            }
+        }
+
+        private void dispose(Reference<?> reference) {
+            Disposable disposable = disposables.remove(reference);
+            try {
+                disposable.dispose();
+            } catch (Throwable e) {
+                e.printStackTrace();
             }
         }
     }

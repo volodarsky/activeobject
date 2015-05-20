@@ -55,14 +55,15 @@ public final aspect ActiveObjectAspect pertypewithin(ActiveObject+) {
     declare warning: execution(@Exclude !public * *.*(..)): "@Exclude on a non-public method is redundand";
     declare parents: @Active * implements ActiveObject;
 
-    private static final Disposer disposer = new Disposer();
     private Class<?> declaringType;
+    private Disposer disposer;
     private MailboxFactory mailboxFactory;
     private long timeout;
     private ActiveObjectThread ActiveObject.thread;
 
     after() returning: staticinitialization(ActiveObject+) {
         declaringType = thisJoinPointStaticPart.getSignature().getDeclaringType();
+        disposer = new Disposer("Disposer of " + declaringType.getName());
         Active annotation = declaringType.getAnnotation(Active.class);
 
         Class<?> cls = annotation.mailbox();
