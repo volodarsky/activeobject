@@ -102,11 +102,6 @@
                         <excludedMethod>org/jvnet/zephyr/activeobject/mailbox/QueueMailbox.enqueue(Ljava/lang/Object;)V
                         </excludedMethod>
                         <excludedMethod>
-                            org/jvnet/zephyr/activeobject/support/MailboxThread.&lt;init&gt;(Lorg/jvnet/zephyr/activeobject/mailbox/Mailbox;)V
-                        </excludedMethod>
-                        <excludedMethod>org/jvnet/zephyr/activeobject/support/MailboxThread.start()V</excludedMethod>
-                        <excludedMethod>org/jvnet/zephyr/activeobject/support/MailboxThread.dispose()V</excludedMethod>
-                        <excludedMethod>
                             org/jvnet/zephyr/activeobject/util/concurrent/RunnableFutureTask$Sync.&lt;init&gt;()V
                         </excludedMethod>
                         <excludedMethod>

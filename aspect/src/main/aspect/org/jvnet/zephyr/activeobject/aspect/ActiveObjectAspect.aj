@@ -28,11 +28,11 @@ import org.jvnet.zephyr.activeobject.annotation.Active;
 import org.jvnet.zephyr.activeobject.annotation.Exclude;
 import org.jvnet.zephyr.activeobject.annotation.Include;
 import org.jvnet.zephyr.activeobject.annotation.Oneway;
+import org.jvnet.zephyr.activeobject.disposer.Disposable;
 import org.jvnet.zephyr.activeobject.disposer.Disposer;
 import org.jvnet.zephyr.activeobject.mailbox.Mailbox;
 import org.jvnet.zephyr.activeobject.mailbox.MailboxFactory;
 import org.jvnet.zephyr.activeobject.mailbox.ReflectiveMailboxFactory;
-import org.jvnet.zephyr.activeobject.support.ActiveObjectThread;
 import org.jvnet.zephyr.activeobject.util.concurrent.RunnableFutureTask;
 
 import java.lang.reflect.Constructor;
@@ -59,9 +59,9 @@ public final aspect ActiveObjectAspect pertypewithin(ActiveObject+) {
     private Disposer disposer;
     private MailboxFactory mailboxFactory;
     private long timeout;
-    private ActiveObjectThread ActiveObject.thread;
+    private volatile ActiveObjectThread ActiveObject.thread;
 
-    after() returning: staticinitialization(ActiveObject+) {
+    before(): staticinitialization(ActiveObject+) {
         declaringType = thisJoinPointStaticPart.getSignature().getDeclaringType();
         disposer = new Disposer("Disposer of " + declaringType.getName());
         Active annotation = declaringType.getAnnotation(Active.class);
@@ -98,14 +98,15 @@ public final aspect ActiveObjectAspect pertypewithin(ActiveObject+) {
         }
     }
 
-    after(ActiveObject obj) returning: initialization((ActiveObject+ && !ActiveObject).new(..)) && this(obj) {
+    before(ActiveObject obj): initialization((ActiveObject+ && !ActiveObject).new(..)) && this(obj) {
         if (obj.getClass() == declaringType) {
             ActiveObjectThread thread = new ActiveObjectThread(mailboxFactory.create());
             thread.setName(obj.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(obj)));
             thread.setDaemon(true);
             disposer.register(obj, thread);
-            obj.thread = thread;
+            thread.running = true;
             thread.start();
+            obj.thread = thread;
         }
     }
 
@@ -134,7 +135,7 @@ public final aspect ActiveObjectAspect pertypewithin(ActiveObject+) {
         try {
             while (true) {
                 try {
-                    thread.getMailbox().enqueue(task);
+                    thread.mailbox.enqueue(task);
                     break;
                 } catch (InterruptedException ignored) {
                     interrupted = true;
@@ -181,12 +182,6 @@ public final aspect ActiveObjectAspect pertypewithin(ActiveObject+) {
 
     void around(final ActiveObject obj): (execution(!@Exclude @Oneway public void ActiveObject+.*(..))
             || execution(@Include @Oneway !public void ActiveObject+.*(..))) && this(obj) {
-        ActiveObjectThread thread = obj.thread;
-        if (Thread.currentThread() == thread) {
-            proceed(obj);
-            return;
-        }
-
         Runnable task = new Runnable() {
             @Override
             public void run() {
@@ -202,7 +197,7 @@ public final aspect ActiveObjectAspect pertypewithin(ActiveObject+) {
         try {
             while (true) {
                 try {
-                    thread.getMailbox().enqueue(task);
+                    obj.thread.mailbox.enqueue(task);
                     break;
                 } catch (InterruptedException ignored) {
                     interrupted = true;
@@ -216,5 +211,34 @@ public final aspect ActiveObjectAspect pertypewithin(ActiveObject+) {
     }
 
     private interface ActiveObject {
+    }
+
+    private static final class ActiveObjectThread extends Thread implements Disposable {
+
+        final Mailbox mailbox;
+        volatile boolean running;
+
+        ActiveObjectThread(Mailbox mailbox) {
+            this.mailbox = mailbox;
+        }
+
+        @Override
+        public void run() {
+            while (running) {
+                Runnable task;
+                try {
+                    task = (Runnable) mailbox.dequeue();
+                } catch (InterruptedException ignored) {
+                    continue;
+                }
+                task.run();
+            }
+        }
+
+        @Override
+        public void dispose() {
+            running = false;
+            interrupt();
+        }
     }
 }

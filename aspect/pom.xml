@@ -90,6 +90,14 @@
                 <configuration>
                     <classesDirectory>${project.build.directory}/remapping-classes</classesDirectory>
                     <testClassesDirectory>${project.build.directory}/remapping-test-classes</testClassesDirectory>
+                    <excludedMethods>
+                        <excludedMethod>
+                            org/jvnet/zephyr/activeobject/aspect/ActiveObjectAspect$ActiveObjectThread.&lt;init&gt;(Lorg/jvnet/zephyr/activeobject/mailbox/Mailbox;)V
+                        </excludedMethod>
+                        <excludedMethod>
+                            org/jvnet/zephyr/activeobject/aspect/ActiveObjectAspect$ActiveObjectThread.dispose()V
+                        </excludedMethod>
+                    </excludedMethods>
                 </configuration>
                 <dependencies>
                     <dependency>
