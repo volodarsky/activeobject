@@ -54,16 +54,40 @@
                             <newName>org/jvnet/zephyr/jcl/java/lang/Thread</newName>
                         </mappingEntry>
                         <mappingEntry>
+                            <oldName>java/util/AbstractQueue</oldName>
+                            <newName>org/jvnet/zephyr/jcl/java/util/AbstractQueue</newName>
+                        </mappingEntry>
+                        <mappingEntry>
+                            <oldName>java/util/Iterator</oldName>
+                            <newName>org/jvnet/zephyr/jcl/java/util/Iterator</newName>
+                        </mappingEntry>
+                        <mappingEntry>
+                            <oldName>java/util/Queue</oldName>
+                            <newName>org/jvnet/zephyr/jcl/java/util/Queue</newName>
+                        </mappingEntry>
+                        <mappingEntry>
                             <oldName>java/util/concurrent/ArrayBlockingQueue</oldName>
                             <newName>org/jvnet/zephyr/jcl/java/util/concurrent/ArrayBlockingQueue</newName>
+                        </mappingEntry>
+                        <mappingEntry>
+                            <oldName>java/util/concurrent/BlockingQueue</oldName>
+                            <newName>org/jvnet/zephyr/jcl/java/util/concurrent/BlockingQueue</newName>
                         </mappingEntry>
                         <mappingEntry>
                             <oldName>java/util/concurrent/LinkedBlockingQueue</oldName>
                             <newName>org/jvnet/zephyr/jcl/java/util/concurrent/LinkedBlockingQueue</newName>
                         </mappingEntry>
                         <mappingEntry>
+                            <oldName>java/util/concurrent/RunnableFuture</oldName>
+                            <newName>org/jvnet/zephyr/jcl/java/util/concurrent/RunnableFuture</newName>
+                        </mappingEntry>
+                        <mappingEntry>
+                            <oldName>java/util/concurrent/TimeUnit</oldName>
+                            <newName>org/jvnet/zephyr/jcl/java/util/concurrent/TimeUnit</newName>
+                        </mappingEntry>
+                        <mappingEntry>
                             <oldName>java/util/concurrent/locks/AbstractQueuedSynchronizer</oldName>
-                            <newName>org/jvnet/zephyr/jcl/impl/util/concurrent/locks/AbstractQueuedSynchronizer
+                            <newName>org/jvnet/zephyr/jcl/java/util/concurrent/locks/AbstractQueuedSynchronizer
                             </newName>
                         </mappingEntry>
                         <mappingEntry>
@@ -98,33 +122,6 @@
                         <exclude>org/jvnet/zephyr/activeobject/util/concurrent/SingleConsumerQueue.class</exclude>
                         <exclude>org/jvnet/zephyr/activeobject/util/concurrent/SingleConsumerQueue$*.class</exclude>
                     </excludes>
-                    <excludedMethods>
-                        <excludedMethod>org/jvnet/zephyr/activeobject/mailbox/QueueMailbox.enqueue(Ljava/lang/Object;)V
-                        </excludedMethod>
-                        <excludedMethod>
-                            org/jvnet/zephyr/activeobject/util/concurrent/RunnableFutureTask$Sync.&lt;init&gt;()V
-                        </excludedMethod>
-                        <excludedMethod>
-                            org/jvnet/zephyr/activeobject/util/concurrent/RunnableFutureTask$Sync.tryAcquireShared(I)I
-                        </excludedMethod>
-                        <excludedMethod>
-                            org/jvnet/zephyr/activeobject/util/concurrent/RunnableFutureTask$Sync.tryReleaseShared(I)Z
-                        </excludedMethod>
-                        <excludedMethod>
-                            org/jvnet/zephyr/activeobject/util/concurrent/RunnableFutureTask$Sync.isCancelled()Z
-                        </excludedMethod>
-                        <excludedMethod>org/jvnet/zephyr/activeobject/util/concurrent/RunnableFutureTask$Sync.isDone()Z
-                        </excludedMethod>
-                        <excludedMethod>
-                            org/jvnet/zephyr/activeobject/util/concurrent/RunnableFutureTask$Sync.getResult()Ljava/lang/Object;
-                        </excludedMethod>
-                        <excludedMethod>org/jvnet/zephyr/activeobject/util/concurrent/RunnableFutureTask.&lt;init&gt;()V
-                        </excludedMethod>
-                        <excludedMethod>org/jvnet/zephyr/activeobject/util/concurrent/RunnableFutureTask.isCancelled()Z
-                        </excludedMethod>
-                        <excludedMethod>org/jvnet/zephyr/activeobject/util/concurrent/RunnableFutureTask.isDone()Z
-                        </excludedMethod>
-                    </excludedMethods>
                 </configuration>
                 <dependencies>
                     <dependency>

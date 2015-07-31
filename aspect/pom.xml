@@ -73,6 +73,14 @@
                             <oldName>java/lang/Thread</oldName>
                             <newName>org/jvnet/zephyr/jcl/java/lang/Thread</newName>
                         </mappingEntry>
+                        <mappingEntry>
+                            <oldName>java/util/concurrent/RunnableFuture</oldName>
+                            <newName>org/jvnet/zephyr/jcl/java/util/concurrent/RunnableFuture</newName>
+                        </mappingEntry>
+                        <mappingEntry>
+                            <oldName>java/util/concurrent/TimeUnit</oldName>
+                            <newName>org/jvnet/zephyr/jcl/java/util/concurrent/TimeUnit</newName>
+                        </mappingEntry>
                     </mappingEntries>
                 </configuration>
                 <executions>
@@ -91,9 +99,6 @@
                     <classesDirectory>${project.build.directory}/remapping-classes</classesDirectory>
                     <testClassesDirectory>${project.build.directory}/remapping-test-classes</testClassesDirectory>
                     <excludedMethods>
-                        <excludedMethod>
-                            org/jvnet/zephyr/activeobject/aspect/ActiveObjectAspect$ActiveObjectThread.&lt;init&gt;(Lorg/jvnet/zephyr/activeobject/mailbox/Mailbox;)V
-                        </excludedMethod>
                         <excludedMethod>
                             org/jvnet/zephyr/activeobject/aspect/ActiveObjectAspect$ActiveObjectThread.dispose()V
                         </excludedMethod>

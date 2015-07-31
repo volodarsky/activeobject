@@ -43,6 +43,11 @@ public final class SingleConsumerQueue<E> extends AbstractQueue<E> {
     }
 
     @Override
+    public boolean add(E e) {
+        return offer(e);
+    }
+
+    @Override
     public Iterator<E> iterator() {
         return new Itr<>(tail.next);
     }
@@ -60,7 +65,8 @@ public final class SingleConsumerQueue<E> extends AbstractQueue<E> {
 
     @Override
     public boolean offer(E e) {
-        Node<E> node = new Node<>(requireNonNull(e));
+        requireNonNull(e);
+        Node<E> node = new Node<>(e);
         Node<E> prev;
         do {
             prev = head.get();

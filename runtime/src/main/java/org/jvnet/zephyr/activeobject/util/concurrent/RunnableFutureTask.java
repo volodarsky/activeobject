@@ -76,7 +76,8 @@ public abstract class RunnableFutureTask<V> implements RunnableFuture<V> {
     }
 
     protected final boolean setException(Throwable exception) {
-        return sync.setException(requireNonNull(exception));
+        requireNonNull(exception);
+        return sync.setException(exception);
     }
 
     protected void interrupt() {
